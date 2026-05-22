@@ -90,8 +90,15 @@ export default {
         const scale = Math.min(scaleX, scaleY)
         const page = document.querySelector('.login-page')
         if (page) {
+            const scaledWidth = 1920 * scale
+            const scaledHeight = 1080 * scale
+            const offsetX = (window.innerWidth - scaledWidth) / 2
+            const offsetY = (window.innerHeight - scaledHeight) / 2
             page.style.transform = `scale(${scale})`
-            page.style.transformOrigin = 'center center'
+            page.style.transformOrigin = 'top left'
+            page.style.position = 'absolute'
+            page.style.left = `${offsetX}px`
+            page.style.top = `${offsetY}px`
         }
     },
     async handleLogin() {
