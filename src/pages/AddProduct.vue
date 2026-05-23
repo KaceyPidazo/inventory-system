@@ -12,9 +12,17 @@
         <h1 class="page-title">Add New Product</h1>
 
         <!-- Image Placeholder -->
-        <div class="image-placeholder">
-          <div class="image-cross-line1"></div>
-          <div class="image-cross-line2"></div>
+            <div class="image-placeholder" @click="triggerFileInput">
+            <img
+                v-if="imagePreview"
+                :src="imagePreview"
+                class="image-preview"
+                alt="Product preview"
+            />
+            <template v-else>
+                <div class="image-cross-line1"></div>
+                <div class="image-cross-line2"></div>
+            </template>
         </div>
 
         <!-- Add Picture Link -->
@@ -122,7 +130,8 @@
 <script>
 import SidebarAdmin from '../components/SidebarAdmin.vue'
 import { collection, addDoc, getDocs } from 'firebase/firestore'
-import { db } from '../firebase'
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { db, storage } from '../firebase'
 
 export default {
   name: 'AddProduct',
@@ -189,26 +198,41 @@ export default {
       if (file) {
         this.imageFile = file
         this.imagePreview = URL.createObjectURL(file)
+        console.log('Image selected:', this.imagePreview)
       }
     },
     async handleSubmit() {
-      this.showSubmitConfirm = false
-      if (!this.productName || !this.price || !this.selectedCategory) {
-        alert('Please fill in all required fields.')
-        return
-      }
-      try {
-        await addDoc(collection(db, 'products'), {
-          name: this.productName,
-          price: parseFloat(this.price),
-          quantity: parseInt(this.quantity),
-          category: this.selectedCategory
-        })
-        this.$router.push('/admin/products')
-      } catch (error) {
-        console.error('Error adding product:', error)
-        alert('Failed to add product. Please try again.')
-      }
+        this.showSubmitConfirm = false
+        if (!this.productName || !this.price || !this.selectedCategory) {
+            alert('Please fill in all required fields.')
+            return
+        }
+        try {
+            let imageUrl = ''
+
+            // Upload image to Firebase Storage if one was selected
+            if (this.imageFile) {
+            const storageRef = ref(storage, `products/${Date.now()}_${this.imageFile.name}`)
+            const snapshot = await uploadBytes(storageRef, this.imageFile)
+            imageUrl = await getDownloadURL(snapshot.ref)
+            console.log('Image uploaded:', imageUrl)
+            }
+
+            // Save product to Firestore with image URL
+            await addDoc(collection(db, 'products'), {
+            name: this.productName,
+            price: parseFloat(this.price),
+            quantity: parseInt(this.quantity),
+            category: this.selectedCategory,
+            imageUrl: imageUrl
+            })
+
+            console.log('Product saved successfully')
+            this.$router.push('/admin/products')
+        } catch (error) {
+            console.error('Error adding product:', error)
+            alert('Failed to add product. Please try again.')
+        }
     },
     handleCancel() {
       this.showCancelConfirm = false
@@ -273,7 +297,7 @@ export default {
   overflow: hidden;
 }
 
-.image-cross-line1 {
+/* .image-cross-line1 {
   position: absolute;
   width: 455px;
   height: 1px;
@@ -291,7 +315,7 @@ export default {
   top: 50%;
   left: -40px;
   transform: rotate(-33.77deg);
-}
+} */
 
 .add-picture {
   position: absolute;
