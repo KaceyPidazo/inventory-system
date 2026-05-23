@@ -46,7 +46,7 @@
         </div>
 
         <!-- Price -->
-        <div class="input-wrapper" style="top: 385px;">
+        <div class="input-wrapper" style="top: 504px;">
           <input
             type="number"
             placeholder="Enter Price"
@@ -61,7 +61,7 @@
         </div>
 
         <!-- Initial Quantity -->
-        <div class="input-wrapper" style="top: 504px;">
+        <div class="input-wrapper" style="top: 613px;">
           <input
             type="number"
             placeholder="Enter Initial Quantity"
@@ -76,7 +76,7 @@
         </div>
 
         <!-- Category Dropdown -->
-        <div class="input-wrapper category-input" style="top: 613px;" @click="toggleCategory">
+        <div class="input-wrapper category-input" style="top: 385px;" @click="toggleCategory">
           <span class="input-field category-text">{{ selectedCategory || 'Choose Category' }}</span>
           <div class="arrow-down-icon"></div>
         </div>
@@ -139,8 +139,8 @@ export default {
   data() {
     return {
       productName: '',
-      price: 0,
-      quantity: 0,
+      price: null,
+      quantity: null,
       selectedCategory: '',
       showCategory: false,
       categories: [],
@@ -413,7 +413,7 @@ export default {
 .category-popup {
   width: 315px;
   left: 737px;
-  top: 702px;
+  top: 474px;
 }
 
 .popup-item {
