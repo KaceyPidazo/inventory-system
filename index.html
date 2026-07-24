@@ -1,10 +1,24 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <script>
+      (function(l) {
+        if (l.search[1] === '/' ) {
+          var decoded = l.search.slice(1).split('&').map(function(s) { 
+          return s.replace(/~and~/g, '&')
+      })
+        window.history.replaceState(null, null,
+        l.pathname.slice(0, -1) + decoded[0] + (decoded[1] ? '&' + decoded[2].slice(5) : '') + l.hash
+      );
+    }
+    }(window.location))
+    </script>
+
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/inventory-system/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>inventory-site</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+      <title>inventory-site</title>
     <script type="module" crossorigin src="/inventory-system/assets/index-Bs-s4Tgp.js"></script>
     <link rel="modulepreload" crossorigin href="/inventory-system/assets/chunk-CilyBKbf.js">
     <link rel="stylesheet" crossorigin href="/inventory-system/assets/index-C9dy_a0U.css">
